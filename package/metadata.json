@@ -1,0 +1,20 @@
+{
+    "KPlugin": {
+        "Id": "com.diredocks.weather7",
+        "Name": "Weather 7",
+        "Description": "A Windows 7-style weather widget for KDE Plasma.",
+        "Icon": "weather-clear",
+        "Category": "Weather",
+        "Version": "0.1",
+        "Website": "https://github.com/diredocks/plasma-applet-weather7",
+        "BugReportUrl": "https://github.com/diredocks/plasma-applet-weather7/issues",
+        "Authors": [
+            {
+                "Name": "Diredocks",
+                "Email": "napking@163.com"
+            }
+        ]
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "KPackageStructure": "Plasma/Applet"
+}
