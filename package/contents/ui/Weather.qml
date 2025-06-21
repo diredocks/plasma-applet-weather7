@@ -54,26 +54,26 @@ Item {
 
   property var statusList: {
     "UNKOWN": "--",
-    "CLEAR_DAY": "Clear",
-    "CLEAR_NIGHT": "Clear",
-    "PARTLY_CLOUDY_DAY": "Partly Cloud",
-    "PARTLY_CLOUDY_NIGHT": "Partly Cloud",
-    "CLOUDY": "Cloudy",
-    "LIGHT_HAZE": "Light Haze",
-    "MODERATE_HAZE": "Moderate Haze",
-    "HEAVY_HAZE": "Heavy Haze",
-    "LIGHT_RAIN": "Light Rain",
-    "MODERATE_RAIN": "Moderate Rain",
-    "HEAVY_RAIN": "Heavy Rain",
-    "STORM_RAIN": "Storm",
-    "FOG": "Foggy",
-    "LIGHT_SNOW": "Light Snow",
-    "MODERATE_SNOW": "Moderate Snow",
-    "HEAVY_SNOW": "Heavy Snow",
-    "STORM_SNOW": "Storm Snow",
-    "DUST": "Dusty",
-    "SAND": "Sand",
-    "WIND": "Windy"
+    "CLEAR_DAY": i18nc("Status CLEAR_DAY", "Clear"),
+    "CLEAR_NIGHT": i18nc("Status CLEAR_NIGHT", "Clear"),
+    "PARTLY_CLOUDY_DAY": i18nc("Status PARTLY_CLOUDY_DAY", "Partly Cloud"),
+    "PARTLY_CLOUDY_NIGHT": i18nc("Status PARTLY_CLOUDY_NIGHT", "Partly Cloud"),
+    "CLOUDY": i18nc("Status CLOUDY", "Cloudy"),
+    "LIGHT_HAZE": i18nc("Status LIGHT_HAZE", "Light Haze"),
+    "MODERATE_HAZE": i18nc("Status MODERATE_HAZE", "Moderate Haze"),
+    "HEAVY_HAZE": i18nc("Status HEAVY_HAZE", "Heavy Haze"),
+    "LIGHT_RAIN": i18nc("Status LIGHT_RAIN", "Light Rain"),
+    "MODERATE_RAIN": i18nc("Status MODERATE_RAIN", "Moderate Rain"),
+    "HEAVY_RAIN": i18nc("Status HEAVY_RAIN", "Heavy Rain"),
+    "STORM_RAIN": i18nc("Status STORM_RAIN", "Storm Rain"),
+    "FOG": i18nc("Status FOG", "Foggy"),
+    "LIGHT_SNOW": i18nc("Status LIGHT_SNOW", "Light Snow"),
+    "MODERATE_SNOW": i18nc("Status MODERATE_SNOW", "Moderate Snow"),
+    "HEAVY_SNOW": i18nc("Status HEAVY_SNOW", "Heavy Snow"),
+    "STORM_SNOW": i18nc("Status STORM_SNOW", "Storm Snow"),
+    "DUST": i18nc("Status DUST", "Dusty"),
+    "SAND": i18nc("Status SAND", "Sand"),
+    "WIND": i18nc("Status WIND", "Windy")
   }
 
   property string scriptPath: Plasmoid.configuration.Command
@@ -83,51 +83,56 @@ Item {
   property string currentStatus: "UNKOWN"
   property string currentCity: Plasmoid.configuration.City
   property string weatherSource: "Weather7"
-  property string updateTime: "Updated at --:--"
+  property string updateTime: i18nc("Updated at --:--", "Updated at --:--")
   property var forecastList: [
     { time: "-- AM", high: "--°", low: "--°", status: "CLOUDY" },
     { time: "-- AM", high: "--°", low: "--°", status: "CLOUDY" },
     { time: "-- PM", high: "--°", low: "--°", status: "WIND" }
   ]
 
+
   Plasma5Support.DataSource {
-      id: executable
-      engine: "executable"
-      connectedSources: []
-      onNewData: function(source, data) {
-        var result = data.stdout.trim()
-        // console.log("Data received:", result)
-        try {
-          var json = JSON.parse(result)
+    id: executable
+    engine: "executable"
+    connectedSources: []
+    onNewData: function(source, data) {
+      var result = data.stdout.trim()
+      // console.log("Data received:", result)
+      parseWeatherData(result)
+      executable.disconnectSource(source)
+    }
+  }
 
-          currentTemperature = Math.round(json.result.realtime.temperature) + "°"
-          currentStatus = json.result.realtime.skycon
+  function parseWeatherData(result) {
+    try {
+      var json = JSON.parse(result)
 
-          var daily = json.result.daily.temperature[0]
-          currentRange = "H: " + Math.round(daily.max) + "° L:" + Math.round(daily.min) + "°"
+      currentTemperature = Math.round(json.result.realtime.temperature) + "°"
+      currentStatus = json.result.realtime.skycon
 
-          var temps = json.result.hourly.temperature
-          var skycons = json.result.hourly.skycon
-          var forecast = []
-          for (var i = 0; i < 3; ++i) {
-            var hour = temps[i]
-            var sky = skycons[i]
-            var time = formatHourAMPM(hour.datetime)
-            forecast.push({
-              time: time,
-              high: Math.round(hour.value) + "°",
-              low: Math.round(hour.value) - 1 + "°", // fake it empty
-              status: sky.value
-            })
-          }
-          forecastList = forecast
-          
-          updateTime = formatUpdateTime()
-        } catch (e) {
-            console.log("JSON parse error:", e)
-        }
-        executable.disconnectSource(source)
+      var daily = json.result.daily.temperature[0]
+      currentRange = "H: " + Math.round(daily.max) + "° L:" + Math.round(daily.min) + "°"
+
+      var temps = json.result.hourly.temperature
+      var skycons = json.result.hourly.skycon
+      var forecast = []
+      for (var i = 0; i < 3; ++i) {
+        var hour = temps[i]
+        var sky = skycons[i]
+        var time = formatHourAMPM(hour.datetime)
+        forecast.push({
+          time: time,
+          high: Math.round(hour.value) + "°",
+          low: Math.round(hour.value) - 1 + "°", // fake it empty
+          status: sky.value
+        })
       }
+      forecastList = forecast
+
+      updateTime = formatUpdateTime()
+    } catch (e) {
+      console.log("JSON parse error:", e)
+    }
   }
 
   function updateWeather() {
@@ -149,7 +154,7 @@ Item {
     var mm = now.getMinutes()
     if (hh < 10) hh = "0" + hh
     if (mm < 10) mm = "0" + mm
-    return "Updated at " + hh + ":" + mm
+    return i18np("Updated at %1:" + "%2", "Updated at %1:" + "%2", hh, mm)
   }
 
   onScriptPathChanged: {
