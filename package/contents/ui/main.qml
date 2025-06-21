@@ -119,7 +119,7 @@ PlasmoidItem {
         MouseArea {
           anchors.fill: parent
           onClicked: {
-            weather.connectScript()
+            weather.updateWeather()
           }
           cursorShape: Qt.PointingHandCursor
         }
@@ -194,7 +194,7 @@ PlasmoidItem {
     triggeredOnStart: true
 
     onTriggered: {
-      weather.connectScript()
+      weather.updateWeather()
     }
   }
 }

@@ -2,9 +2,9 @@ import QtQuick
 import org.kde.plasma.configuration
 
 ConfigModel {
-    ConfigCategory {
-         name: "General"
-         icon: "plasma"
-         source: "configGeneral.qml"
-    }
+  ConfigCategory {
+    name: "General"
+    icon: "services"
+    source: "config/configGeneral.qml"
+  }
 }
