@@ -18,7 +18,7 @@ For more details about the expected JSON format and available APIs, please visit
 
 You'll need `kpackagetool6`
 
-```
+```shell
 kpackagetool6 --type "Plasma/Applet" --install package # For installing
 kpackagetool6 --type "Plasma/Applet" --upgrade package # For upgrading
 ```
