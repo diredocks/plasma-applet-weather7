@@ -2,20 +2,41 @@ import QtQuick
 import QtQuick.Controls as QQC2
 import org.kde.kcmutils as KCM
 import org.kde.kirigami as Kirigami
+import Qt.labs.platform as Platform
 
 KCM.SimpleKCM {
   id: generalConfigPage
 
   property alias cfg_City: cityField.text
   property alias cfg_Command: commandField.text
-  property alias cfg_FontFamily: fontFamilyField.text
+  property alias cfg_FontFamily: fontDialog.fontChosen.family
   property alias cfg_Interval: updateIntervalSpin.value
 
   Kirigami.FormLayout {
-    QQC2.TextField {
-      id: fontFamilyField
-      text: plasmoid.configuration.FontFamily
+    Row {
+      spacing: Kirigami.Units.smallSpacing
       Kirigami.FormData.label: i18nc("@label", "Font Family:")
+      QQC2.TextField {
+        id: fontFamilyField
+        text: fontDialog.fontChosen.family
+        readOnly: true
+      }
+      QQC2.ToolButton {
+        icon.name: "settings-configure"
+
+        onClicked: {
+          fontDialog.currentFont = fontDialog.fontChosen
+          fontDialog.open()
+        }
+      }
+      Platform.FontDialog {
+        id: fontDialog
+        property font fontChosen: Qt.font()
+
+        onAccepted: {
+          fontChosen = font
+        }
+      }
     }
     QQC2.TextField {
       id: commandField
